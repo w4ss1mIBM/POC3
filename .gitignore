@@ -1,0 +1,21 @@
+# macOS system files
+.DS_Store
+
+# Local Terraform directories & files
+.terraform/
+**/*.tfstate
+**/*.tfstate.*.backup
+**/*.tfstate.backup
+**/*.tfvars
+**/*.tfplan
+**/*.tflint.hcl
+**/terraform.tfvars
+**/terraform.tfvars.json
+**/crash.log
+**/override.tf
+**/override.tf.json
+**/*_override.tf
+**/*_override.tf.json
+**/.terraformrc
+**/terraform.rc
+**/.terraform.lock.hcl

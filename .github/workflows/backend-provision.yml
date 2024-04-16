@@ -1,0 +1,39 @@
+name: "(Optional) Provision BackEnd Terraform"
+
+# Trigger the workflow manually from GitHub UI with an input
+on:
+  workflow_dispatch:
+
+
+# Global environment variables used across all jobs
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  TERRAFORM_VERSION: "1.2.5"
+  # Directories for Terraform configurations
+  S3_CREATE_DIR: "./backend"
+
+jobs:
+  # Job to create the backend (S3,Dynamo)
+  manage_tf_backend:
+    name: Provision/Destroy Terraform backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3 # Checks out the repository code to the runner
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2 # Sets up specified Terraform version
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - uses: actions/checkout@v3
+      - name: Initialize Terraform Configuration for S3 Bucket
+        run: |
+          terraform init
+        working-directory: ${{ env.S3_CREATE_DIR }}
+      - name: Apply or Destroy Terraform Configuration
+        run: terraform apply -auto-approve -input=false
+ 
+        working-directory: ${{ env.S3_CREATE_DIR }}
