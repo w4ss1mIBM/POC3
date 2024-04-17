@@ -90,7 +90,7 @@ variable "nlb_tg_port" {
 variable "windows_server_ami_name_pattern" {
   description = "Name pattern to identify the Windows AMI."
   type        = string
-  default     = "FRESH-AMI-*"
+  default     = "fresh-ec2-without-application-config-ami-Dot-NET-App-Final-*"
 }
 
 variable "ami_owner" {

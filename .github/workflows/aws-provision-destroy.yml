@@ -22,12 +22,14 @@ env:
   WEB_APP_DIR: "./"
   # Backend configuration
   TF_BACKEND_BUCKET: ${{ secrets.TF_BACKEND_BUCKET }}
-  TF_BACKEND_KEY: ${{ secrets.AWS_REGION }}
-  TF_BACKEND_REGION: ${{ secrets.TF_BACKEND_REGION }}
+  TF_BACKEND_KEY: ${{ secrets.TF_BACKEND_KEY }}
+  TF_BACKEND_REGION: ${{ secrets.AWS_REGION }}
   TF_BACKEND_DYNAMODB_TABLE: ${{ secrets.TF_BACKEND_DYNAMODB_TABLE }}
   OIDC_BACKEND_REGION: ${{ secrets.AWS_REGION }}
-  OIDC_CLIENT_ID: ${{ secrets.OIDC_CLIENT_ID }}
-  OIDC_CLIENT_SECRET: ${{ secrets.OIDC_CLIENT_SECRET }}
+  OIDC_CLIENT_ID_PUBLIC: ${{ secrets.OIDC_CLIENT_ID_PUBLIC }}
+  OIDC_CLIENT_SECRET_PUBLIC: ${{ secrets.OIDC_CLIENT_SECRET_PUBLIC }}
+  OIDC_CLIENT_ID_PRIVATE: ${{ secrets.OIDC_CLIENT_ID_PRIVATE }}
+  OIDC_CLIENT_SECRET_PRIVATE: ${{ secrets.OIDC_CLIENT_SECRET_PRIVATE }}
 jobs:
   # Job for creating/Destroying AWS ressources
   manage_resources:
@@ -56,10 +58,12 @@ jobs:
       - name: Apply or Destroy Terraform Configuration
         run: |
           if [ "${{ github.event.inputs.action_type }}" == "provision" ]; then
-            terraform apply -auto-approve -input=false   -var="client_id=${{ env.OIDC_CLIENT_ID }}" \
-            -var="client_secret=${{ env.OIDC_CLIENT_SECRET }}"
+            terraform apply -auto-approve -input=false   -var="client_id_public=${{ env.OIDC_CLIENT_ID }}" \
+            -var="client_secret_public=${{ env.OIDC_CLIENT_SECRET }}" -var="client_id_private=${{ env.OIDC_CLIENT_ID }}" \
+            -var="client_secret_private=${{ env.OIDC_CLIENT_SECRET }}"
           else
-            terraform destroy -auto-approve -var="client_id=${{ env.OIDC_CLIENT_ID }}" \
-            -var="client_secret=${{ env.OIDC_CLIENT_SECRET }}"
+            terraform destroy -auto-approve -var="client_id_public=${{ env.OIDC_CLIENT_ID }}" \
+            -var="client_secret_public=${{ env.OIDC_CLIENT_SECRET }}" -var="client_id_private=${{ env.OIDC_CLIENT_ID }}" \
+            -var="client_secret_private=${{ env.OIDC_CLIENT_SECRET }}"
           fi
         working-directory: ${{ env.WEB_APP_DIR }}
